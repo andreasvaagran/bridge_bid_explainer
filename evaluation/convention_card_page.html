@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<title>Convention Cards From Play</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a printed convention card. Boxed form sections on card stock, fill-in values in mono,
+   entries that differ from WBridge5 printed in alert red, as alertable calls are on a real card. */
+:root {
+  --paper: #f3f5f7;
+  --sheet: #ffffff;
+  --ink: #1a2333;
+  --muted: #5d6879;
+  --rule: #c7cfda;
+  --rule-soft: #e3e8ee;
+  --select: #1f4f7a;
+  --select-ink: #ffffff;
+  --alert: #b8122b;
+  --alert-wash: #fbe9ec;
+  --suit-red: #c0182f;
+  --bar: #9aa8bb;
+  --f-form: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-fill: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #11151b; --sheet: #191e26; --ink: #e4e8ee; --muted: #9aa5b5; --rule: #3a4452; --rule-soft: #262d38;
+    --select: #7fb2e0; --select-ink: #0e1620; --alert: #ff7083; --alert-wash: #3a1d24; --suit-red: #ff7083; --bar: #5d6a7c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #11151b; --sheet: #191e26; --ink: #e4e8ee; --muted: #9aa5b5; --rule: #3a4452; --rule-soft: #262d38;
+  --select: #7fb2e0; --select-ink: #0e1620; --alert: #ff7083; --alert-wash: #3a1d24; --suit-red: #ff7083; --bar: #5d6a7c;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 28px; }
+.red { color: var(--suit-red); }
+.form-label {
+  font-family: var(--f-form); text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
+  font-size: 13px; color: var(--muted);
+}
+header { display: grid; gap: 8px; }
+h1 {
+  font-family: var(--f-form); font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  font-size: clamp(30px, 5vw, 44px); line-height: 1; margin: 0; text-wrap: balance;
+}
+header p { margin: 0; max-width: 70ch; color: var(--muted); }
+header p strong { color: var(--ink); font-weight: 600; }
+
+/* model picker */
+.picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.pgroup { display: grid; gap: 6px; align-content: start; }
+.pgroup .btns { display: grid; gap: 4px; }
+.pbtn {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;
+  font: 500 14px/1.2 var(--f-body); color: var(--ink); background: var(--sheet);
+  border: 1px solid var(--rule); border-radius: 3px; padding: 8px 10px; cursor: pointer; text-align: left;
+}
+.pbtn:hover { border-color: var(--select); }
+.pbtn:focus-visible { outline: 2px solid var(--select); outline-offset: 2px; }
+.pbtn[aria-pressed="true"] { background: var(--select); color: var(--select-ink); border-color: var(--select); }
+.pbtn .count { font: 600 12px var(--f-fill); color: var(--alert); white-space: nowrap; }
+.pbtn[aria-pressed="true"] .count { color: var(--select-ink); }
+.pbtn .count.zero { color: var(--muted); font-weight: 400; }
+.pbtn[aria-pressed="true"] .count.zero { color: var(--select-ink); opacity: .75; }
+
+/* the card */
+.card { background: var(--sheet); border: 2px solid var(--ink); border-radius: 2px; }
+.card-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 24px;
+  padding: 14px 18px; border-bottom: 2px solid var(--ink);
+}
+.card-head .names { display: grid; gap: 2px; min-width: 0; }
+.card-head h2 { margin: 0; font: 700 28px/1.05 var(--f-form); text-transform: uppercase; letter-spacing: .03em; }
+.card-head .sub { color: var(--muted); font-size: 13px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.stat { display: grid; gap: 0; }
+.stat b { font: 600 18px var(--f-fill); font-variant-numeric: tabular-nums; }
+.stat b.al { color: var(--alert); }
+.sections { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sec { border-bottom: 1px solid var(--rule); min-width: 0; }
+.sec:nth-child(odd) { border-right: 1px solid var(--rule); }
+.sec h3 {
+  margin: 0; padding: 7px 18px; background: var(--rule-soft); border-bottom: 1px solid var(--rule);
+  font: 700 15px var(--f-form); text-transform: uppercase; letter-spacing: .08em;
+}
+.entry {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px;
+  padding: 9px 18px; border-bottom: 1px solid var(--rule-soft);
+}
+.entry:last-child { border-bottom: 0; }
+.entry .lab { font-weight: 600; }
+.entry .hcp { font: 500 16px var(--f-fill); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.entry .hcp small { font-size: 12px; color: var(--muted); font-weight: 400; }
+.entry .detail { grid-column: 1 / -1; color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 2px 14px; }
+.entry .detail .fill { font-family: var(--f-fill); font-size: 12.5px; color: var(--ink); }
+.held { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: end; gap: 4px 14px; font-size: 13px; color: var(--muted); }
+.held .fill { font-family: var(--f-fill); font-size: 12.5px; color: var(--ink); }
+.held .key { font-family: var(--f-form); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; font-size: 12px; color: var(--ink); }
+.hist { display: inline-flex; align-items: end; gap: 2px; height: 30px; }
+.hist span { display: grid; grid-template-rows: 1fr auto; justify-items: center; width: 13px; height: 100%; }
+.hist i { display: block; width: 9px; background: var(--select); opacity: .75; align-self: end; min-height: 1px; }
+.hist b { font: 400 9.5px/1 var(--f-fill); color: var(--muted); padding-top: 2px; }
+.entry.alert .hist i { background: var(--alert); }
+.sprof { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 16px; padding-top: 4px; }
+.sprof details { grid-column: 1 / -1; }
+.sprof details > div { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px 16px; padding-top: 8px; }
+.sprof summary { cursor: pointer; font-size: 13px; color: var(--select); width: fit-content; }
+.sprof summary:focus-visible { outline: 2px solid var(--select); outline-offset: 2px; }
+.sp { display: grid; gap: 3px; min-width: 0; }
+.sp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 13px; }
+.sp-head .call { font-weight: 600; }
+.sp-head .n { font: 11.5px var(--f-fill); color: var(--muted); white-space: nowrap; }
+.sp-key { font-size: 12px; color: var(--muted); }
+.sp-key b { font-weight: 600; color: var(--select); }
+.sp-row { display: grid; grid-template-columns: 14px minmax(0, 1fr) 30px; align-items: center; gap: 6px; }
+.sp-row .s { font-size: 13px; text-align: center; }
+.sp-row .v { font: 11.5px var(--f-fill); text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sp-row.key .v { color: var(--ink); font-weight: 600; }
+.track { position: relative; height: 12px; background: var(--rule-soft); border-radius: 1px; }
+.track .fill { position: absolute; left: 0; top: 2px; bottom: 2px; background: var(--bar); }
+.sp-row.key .track .fill { background: var(--select); }
+.track .whisk { position: absolute; top: 50%; height: 2px; margin-top: -1px; background: var(--ink); opacity: .55; }
+.track .whisk::before, .track .whisk::after { content: ""; position: absolute; top: -3px; width: 1px; height: 8px; background: var(--ink); }
+.track .whisk::before { left: 0; } .track .whisk::after { right: 0; }
+.track .med { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ink); }
+.track .avg { position: absolute; top: -2px; bottom: -2px; border-left: 1px dashed var(--muted); }
+.sp-axis { display: grid; grid-template-columns: 14px minmax(0, 1fr) 30px; gap: 6px; font: 10px var(--f-fill); color: var(--muted); }
+.sp-axis span:nth-child(2) { display: flex; justify-content: space-between; }
+.viewsw { display: inline-flex; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; margin: 0 0 10px; }
+.viewsw button { font: 600 13px var(--f-form); text-transform: uppercase; letter-spacing: .06em; padding: 6px 12px; border: 0; background: var(--sheet); color: var(--ink); cursor: pointer; }
+.viewsw button[aria-pressed="true"] { background: var(--select); color: var(--select-ink); }
+.viewsw button:focus-visible { outline: 2px solid var(--select); outline-offset: -2px; }
+.entry.alert { background: var(--alert-wash); }
+.entry.alert .lab, .entry.alert .hcp { color: var(--alert); }
+.entry .why { grid-column: 1 / -1; color: var(--alert); font-size: 13px; font-weight: 500; }
+.entry .why::before { content: "Alert · "; font-family: var(--f-form); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+.card-foot { padding: 10px 18px; font-size: 13px; color: var(--muted); }
+
+/* comparison */
+.compare h2 { margin: 0 0 4px; font: 700 24px var(--f-form); text-transform: uppercase; letter-spacing: .04em; }
+.compare > p { margin: 0 0 12px; color: var(--muted); max-width: 70ch; }
+.tscroll { overflow-x: auto; border: 1px solid var(--rule); background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { padding: 6px 9px; border-bottom: 1px solid var(--rule-soft); white-space: nowrap; }
+thead th {
+  font: 600 13px/1.15 var(--f-form); text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+  vertical-align: bottom; text-align: right; border-bottom: 2px solid var(--ink); white-space: normal; min-width: 72px;
+}
+thead th:first-child { text-align: left; }
+thead th.sel { color: var(--select); }
+tbody th { text-align: left; font-weight: 500; position: sticky; left: 0; background: var(--sheet); }
+tbody tr.grp th { font: 700 13px var(--f-form); text-transform: uppercase; letter-spacing: .08em; background: var(--rule-soft); color: var(--ink); }
+td { font-family: var(--f-fill); text-align: right; font-variant-numeric: tabular-nums; }
+td.ref { color: var(--muted); }
+td.al { color: var(--alert); font-weight: 600; background: var(--alert-wash); }
+td.sel { box-shadow: inset 2px 0 0 var(--select), inset -2px 0 0 var(--select); }
+tfoot td, tfoot th { border-top: 2px solid var(--ink); font-weight: 600; }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 28px; font-size: 14px; }
+.notes div { display: grid; gap: 4px; align-content: start; }
+.notes p { margin: 0; color: var(--muted); }
+.notes code { font-family: var(--f-fill); font-size: 12.5px; color: var(--ink); word-break: break-all; }
+
+@media (max-width: 760px) {
+  .sections { grid-template-columns: minmax(0, 1fr); }
+  .sec:nth-child(odd) { border-right: 0; }
+  .entry, .sec h3, .card-head, .card-foot { padding-left: 12px; padding-right: 12px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .entry, .pbtn { transition: background-color .15s ease, color .15s ease; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="form-label">Convention cards from play · evaluation/convention_card_figures.py</span>
+    <h1>Convention Cards From Play</h1>
+    <p id="intro">Each card describes the system a model actually bids, learned from its own four-seat play with nobody vulnerable; WBridge5's card is fitted the same way on its training-split deals. A convention is a guideline, not a law: the ranges describe the hands a bid is usually made with, and <span style="color:var(--alert);font-weight:600">red</span> marks an entry whose range has moved away from WBridge5's, not a single odd bid.</p>
+  </header>
+
+  <nav class="picker" id="picker" aria-label="Choose a model"></nav>
+
+  <article class="card" id="card" aria-live="polite"></article>
+
+  <section class="compare">
+    <h2 id="all-head">All side by side</h2>
+    <p>Per entry, the 5th–95th percentile of the hands that made the call: their HCP, or the length they held in the suit the entry is about. "Key suit" gives, for the entry's most common bid and auction, the suit whose mean length is furthest from an average hand's 3.25 cards. Click a column heading to open that model's card.</p>
+    <div class="viewsw" role="group" aria-label="Table shows"><button type="button" id="view-hcp" data-view="hcp">HCP</button><button type="button" id="view-len" data-view="len">Length held</button><button type="button" id="view-key" data-view="key">Key suit</button></div>
+    <div class="tscroll"><table id="matrix"></table></div>
+  </section>
+
+  <section class="notes">
+    <div>
+      <span class="form-label">How a range is read</span>
+      <p>"15–17" means 90% of the hands this model opened 1NT with held 15 to 17 HCP. "Held" gives the same 5th–95th percentile for the length of the suit the entry is about (the bid suit, partner's major, their suit...), with its median and the full distribution as bars; pooled entries such as 1♥/1♠ also give it per call. The share after a feature such as "balanced 90%" is how many of those hands had it. "Frequency" is how often the call is chosen among all decisions in that situation.</p>
+    </div>
+    <div>
+      <span class="form-label">Suit bars</span>
+      <p>One panel per bid and auction ("X after 1♦" is a double of a 1♦ opening). Each bar is the mean length held in that suit on a 0–9 scale, the whisker the 5th–95th percentile, the dark tick the median, and the dashed line the 3.25 cards of an average hand. The key suit, in blue, is the one furthest from that line: long for a suit the bid shows, short for one it denies. When every suit is within half a card of it, no suit is marked.</p>
+    </div>
+    <div>
+      <span class="form-label">When an entry is red</span>
+      <p>An entry is red when either end of its HCP range moves 2 or more points from WBridge5's, either end of the length range held moves 2 or more cards or its median moves 1 or more, its feature share moves 10 or more points, or the call is made at least 1.5 times as often (or at most two thirds as often). One-point moves are within sampling noise at these counts.</p>
+    </div>
+    <div>
+      <span class="form-label">Fit columns</span>
+      <p>"Own card fits" is the share of held-out decisions that the model's own decision-tree card predicts. "WBridge5's card fits" applies WBridge5's tree to the same decisions. "Auctions played differently" counts auctions where the model's own card beats WBridge5's by 10 or more points.</p>
+    </div>
+    <div>
+      <span class="form-label">Source</span>
+      <p>The cards are <code>evaluation/convention_cards_from_play.py</code>'s <code>&lt;model&gt;.json</code> files in this folder; this page is written by <code>evaluation/convention_card_figures.py</code>, <code>evaluation/convention_card_classic.py</code> draws each card as a one-page printed card (<code>classic/</code>), and <code>evaluation/convention_card_ebu_form.py</code> fills in the English Bridge Union's standard card from the model's play (<code>ebu/</code>).</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const DATA = __DATA__;
+const GROUPS = DATA.groups;
+const SHORT = Object.fromEntries(DATA.models.map(m => [m.key, m.short]));
+const byKey = Object.fromEntries(DATA.models.map(m => [m.key, m]));
+const WB = byKey.wbridge5;
+const pct = x => (x * 100).toFixed(1).replace(/\.0$/, "") + "%";
+const pct1 = x => (x * 100).toFixed(1) + "%";
+const fmt = n => n.toLocaleString("en-US");
+const rng = h => h ? `${h[0]}–${h[1]}` : "–";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const suits = s => esc(s).replace(/[♥♦]/g, c => `<span class="red">${c}</span>`);
+
+// why an entry departs from WBridge5's (empty list: it doesn't), from evaluation/convention_card_figures.departures
+const lr = h => h ? `${h[0]}–${h[2]}` : "–";
+function alerts(e, w, kind) {
+  const al = e.al || {};
+  if (kind === "hcp") return al.hcp || [];
+  if (kind === "len") return al.length || [];
+  return [].concat(...Object.values(al));
+}
+const alertCount = m => m.key === "wbridge5" ? null : m.headline.filter((e, i) => alerts(e, WB.headline[i]).length).length;
+
+let current = DATA.models.length > 1 ? DATA.models[1].key : "wbridge5";
+try { const s = localStorage.getItem("cc-model"); if (s && byKey[s]) current = s; } catch (_) {}
+if (/^#[a-z_]+$/.test(location.hash) && byKey[location.hash.slice(1)]) current = location.hash.slice(1);
+
+function renderPicker() {
+  document.getElementById("picker").innerHTML = GROUPS.map(g => `
+    <div class="pgroup"><span class="form-label">${g.title}</span><div class="btns">
+      ${g.keys.map(k => {
+        const c = alertCount(byKey[k]);
+        const badge = c === null ? `<span class="count zero">reference</span>`
+          : `<span class="count${c ? "" : " zero"}">${c ? c + " red" : "matches"}</span>`;
+        return `<button type="button" class="pbtn" id="pick-${k}" data-k="${k}" aria-pressed="${k === current}">${esc(byKey[k].name)}${badge}</button>`;
+      }).join("")}
+    </div></div>`).join("");
+}
+
+function hist(d) {
+  const tot = d.reduce((a, b) => a + b, 0) || 1, idx = d.map((v, i) => v / tot >= 0.005 ? i : -1).filter(i => i >= 0);
+  if (!idx.length) return "";
+  const lo = idx[0], hi = idx[idx.length - 1], mx = Math.max(...d.slice(lo, hi + 1));
+  let out = "";
+  for (let i = lo; i <= hi; i++)
+    out += `<span title="${i} cards: ${pct(d[i] / tot)}"><i style="height:${Math.max(1, Math.round(20 * d[i] / mx))}px"></i><b>${i}</b></span>`;
+  return `<span class="hist" aria-hidden="true">${out}</span>`;
+}
+function heldHtml(e) {
+  if (!e.hl || !e.hl.range) return "";
+  const r = e.hl.range;
+  const per = e.hb && Object.keys(e.hb).length
+    ? `<span>${Object.entries(e.hb).map(([c, v]) => `${suits(c.replace(/[SHDC]$/, x => ({ S: "♠", H: "♥", D: "♦", C: "♣" })[x]))} <span class="fill">${lr(v.range)}</span>`).join(" · ")}</span>` : "";
+  const all = e.sl ? `<span>all suits ${["S", "H", "D", "C"].map(s => `${suits({ S: "♠", H: "♥", D: "♦", C: "♣" }[s])}<span class="fill">${rng([e.sl[s][0], e.sl[s][2]])}</span>`).join(" ")}</span>` : "";
+  return `<span class="held"><span><span class="key">Held</span> <span class="fill">${lr(r)}</span> in ${esc(e.hl.of)}, median <span class="fill">${r[1]}</span></span>${hist(e.hl.dist)}${per}</span>`;
+}
+const SYM = { S: "♠", H: "♥", D: "♦", C: "♣" };
+const callTxt = c => c.replace(/^(\d)([SHDC])$/, (_, l, s) => l + SYM[s]);
+const AVG = DATA.thresholds.avg, SCALE = 9;
+const STANDS_OUT = DATA.thresholds.stands_out;   // a key suit is at least this far from an average hand
+const keySuit = p => {
+  const k = ["S", "H", "D", "C"].reduce((a, b) => Math.abs(p.mean[b] - AVG) > Math.abs(p.mean[a] - AVG) ? b : a);
+  return Math.abs(p.mean[k] - AVG) >= STANDS_OUT ? k : null;
+};
+function spPanel(p) {
+  const k = keySuit(p), x = v => `${Math.min(v, SCALE) / SCALE * 100}%`;
+  const title = p.after ? `${callTxt(p.call)} after ${p.after.split(" ").map(callTxt).join(" ")}` : callTxt(p.call);
+  const rows = ["S", "H", "D", "C"].map(s => {
+    const r = p.range[s], m = p.mean[s];
+    return `<div class="sp-row${s === k ? " key" : ""}" title="${SYM[s]}: mean ${m.toFixed(1)}, median ${r[1]}, 5–95% ${r[0]}–${r[2]}">
+      <span class="s">${suits(SYM[s])}</span>
+      <span class="track"><span class="fill" style="width:${x(m)}"></span><span class="whisk" style="left:${x(r[0])};width:calc(${x(r[2])} - ${x(r[0])})"></span><span class="med" style="left:${x(r[1])}"></span><span class="avg" style="left:${x(AVG)}"></span></span>
+      <span class="v">${m.toFixed(1)}</span></div>`;
+  }).join("");
+  const d = k ? p.mean[k] - AVG : 0;
+  return `<div class="sp"><div class="sp-head"><span class="call">${suits(title)}</span><span class="n">n ${fmt(p.n)}</span></div>
+    <span class="sp-key">${k ? `key suit <b>${suits(SYM[k])} ${d >= 0 ? "long" : "short"}</b>, ${d >= 0 ? "+" : "−"}${Math.abs(d).toFixed(1)} cards on an average hand` : "no suit stands out: all within half a card of an average hand"}</span>
+    ${rows}<div class="sp-axis"><span></span><span><span>0</span><span>3</span><span>6</span><span>9</span></span><span></span></div></div>`;
+}
+function spHtml(e) {
+  const ps = e.sp || [];
+  if (!ps.length) return "";
+  const head = ps.slice(0, 4).map(spPanel).join(""), rest = ps.slice(4);
+  return `<div class="sprof">${head}${rest.length ? `<details><summary>${rest.length} less common ${rest.length === 1 ? "auction" : "auctions"}</summary><div>${rest.map(spPanel).join("")}</div></details>` : ""}</div>`;
+}
+
+function renderCard() {
+  const m = byKey[current], isRef = m.key === "wbridge5";
+  const groups = [];
+  m.headline.forEach((e, i) => {
+    let g = groups.find(x => x.title === e.g);
+    if (!g) groups.push(g = { title: e.g, items: [] });
+    g.items.push([e, WB.headline[i]]);
+  });
+  const nAl = alertCount(m);
+  const stats = [
+    ["Decisions", fmt(m.decisions)],
+    ["Covered", pct1(m.coverage)],
+    ["Own card fits", pct1(m.fidelity)],
+    ...(isRef ? [] : [["WBridge5's card fits", pct1(m.wb5_fidelity)],
+                      ["Auctions played differently", String(m.differing), m.differing >= 20]]),
+  ];
+  document.getElementById("card").innerHTML = `
+    <div class="card-head">
+      <div class="names">
+        <span class="form-label">${isRef ? "Reference system" : "Convention card"}</span>
+        <h2>${esc(m.name)}</h2>
+        <span class="sub">${isRef ? "WBridge5 in SAYC mode, the system the supervised models imitate and every model except brl RL scratch starts from" :
+          nAl ? `${nAl} of ${m.headline.length} entries depart from WBridge5` : "Every entry matches WBridge5 within the thresholds below"}</span>
+      </div>
+      <div class="stats">${stats.map(([l, v, al]) => `<div class="stat"><span class="form-label">${l}</span><b class="${al ? "al" : ""}">${v}</b></div>`).join("")}</div>
+    </div>
+    <div class="sections">${groups.map(g => `
+      <section class="sec"><h3>${suits(g.title)}</h3>
+        ${g.items.map(([e, w]) => {
+          const why = isRef ? [] : alerts(e, w);
+          return `<div class="entry${why.length ? " alert" : ""}">
+            <span class="lab">${suits(e.l)}</span>
+            <span class="hcp">${e.hcp ? `${rng(e.hcp)} <small>HCP</small>` : `<small>too few calls</small>`}</span>
+            <span class="detail">
+              ${e.m ? `<span><span class="fill">${esc(e.m)}</span> ${pct(e.ms)}</span>` : ""}
+              <span>frequency <span class="fill">${pct1(e.f)}</span></span>
+              <span>n <span class="fill">${fmt(e.n)}</span></span>
+            </span>
+            ${heldHtml(e)}
+            ${spHtml(e)}
+            ${why.length ? `<span class="why">${esc(why.join("; "))}</span>` : ""}
+          </div>`;
+        }).join("")}
+      </section>`).join("")}
+    </div>
+    <div class="card-foot">Ranges are the 5th–95th percentile of the hands that made the call; bars show how many of them held each length; n is the number of such calls in the model's 50,000 deals.</div>`;
+}
+
+function renderMatrix() {
+  const order = GROUPS.flatMap(g => g.keys);
+  let last = null, rows = "";
+  WB.headline.forEach((w, i) => {
+    if (w.g !== last) { rows += `<tr class="grp"><th colspan="${order.length + 1}">${suits(w.g)}</th></tr>`; last = w.g; }
+    rows += `<tr><th>${suits(w.l)}</th>${order.map(k => {
+      const e = byKey[k].headline[i];
+      const why = k === "wbridge5" ? [] : alerts(e, w, view);
+      const cls = [k === "wbridge5" ? "ref" : "", why.length ? "al" : "", k === current ? "sel" : ""].join(" ").trim();
+      const p0 = e.sp && e.sp[0], ks = p0 && keySuit(p0);
+      const val = view === "len" ? (e.hl && e.hl.range ? lr(e.hl.range) : "–")
+        : view === "key" ? (p0 ? (ks ? `${suits(SYM[ks])} ${p0.mean[ks].toFixed(1)}` : "none") : "–") : rng(e.hcp);
+      return `<td class="${cls}"${why.length ? ` title="${esc(why.join("; "))}"` : ""}>${val}</td>`;
+    }).join("")}</tr>`;
+  });
+  const foot = (label, f) => `<tr><th>${label}</th>${order.map(k => `<td class="${k === current ? "sel" : ""}">${f(byKey[k])}</td>`).join("")}</tr>`;
+  document.getElementById("matrix").innerHTML = `
+    <thead><tr><th>Entry</th>${order.map(k => `<th class="${k === current ? "sel" : ""}"><a href="#${k}" data-k="${k}" style="color:inherit">${esc(SHORT[k])}</a></th>`).join("")}</tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot>
+      ${foot("Red entries", m => m.key === "wbridge5" ? "–" : alertCount(m))}
+      ${foot("Own card fits", m => pct1(m.fidelity))}
+      ${foot("WBridge5's card fits", m => m.wb5_fidelity == null ? "–" : pct1(m.wb5_fidelity))}
+      ${foot("Auctions played differently", m => m.differing == null ? "–" : m.differing)}
+    </tfoot>`;
+}
+
+let view = "hcp";
+try { const v = localStorage.getItem("cc-view"); if (v === "len" || v === "key") view = v; } catch (_) {}
+function setView(v) {
+  view = v;
+  try { localStorage.setItem("cc-view", v); } catch (_) {}
+  document.getElementById("view-hcp").setAttribute("aria-pressed", v === "hcp");
+  document.getElementById("view-len").setAttribute("aria-pressed", v === "len");
+  document.getElementById("view-key").setAttribute("aria-pressed", v === "key");
+  renderMatrix();
+}
+document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+
+function select(k) {
+  current = k;
+  try { localStorage.setItem("cc-model", k); } catch (_) {}
+  renderPicker(); renderCard(); renderMatrix();
+}
+document.addEventListener("click", ev => {
+  const t = ev.target.closest("[data-k]");
+  if (!t) return;
+  ev.preventDefault();
+  select(t.dataset.k);
+  if (t.tagName === "A") document.getElementById("card").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("all-head").textContent = `All ${DATA.models.length} side by side`;
+select(current);
+setView(view);
+</script>
+
+</html>

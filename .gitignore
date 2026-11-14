@@ -1,0 +1,17 @@
+# data, trained models and results (see README)
+runs/
+data/
+dds_results/
+bridge_models/*.pkl
+*.pkl
+# generated training data of the explainer
+nlg/frames_raw/
+nlg/verify_out/
+nlg/train_dataset_*.jsonl
+nlg/train_explanations_*.jsonl
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/

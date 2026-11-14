@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bridge XAI</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Bridge XAI</div>
+  <div id="board" class="board"></div>
+  <nav class="top-actions">
+    <button id="btn-new" class="btn" title="Deal a random new hand with the same seats">New deal</button>
+    <button id="btn-setup" class="btn ghost" title="Dealer, vulnerability, deal number, advisor, or enter a deal">Options</button>
+    <span id="llm-status" class="llm" title=""></span>
+  </nav>
+</header>
+
+<main class="layout">
+  <section class="game">
+    <div id="table" class="table">
+      <div class="seat seat-N" id="seat-N"></div>
+      <div class="seat seat-W" id="seat-W"></div>
+      <div class="center">
+        <div class="auction" id="auction"></div>
+        <div class="turn-line" id="turn-line"></div>
+      </div>
+      <div class="seat seat-E" id="seat-E"></div>
+      <div class="seat seat-S" id="seat-S"></div>
+    </div>
+
+    <div class="controls">
+      <button id="btn-next" class="btn">Next bid</button>
+      <button id="btn-auto" class="btn">Bid to the end</button>
+      <button id="btn-box" class="btn ghost" title="What every bid would mean at this point">Meanings</button>
+      <label class="check"><input type="checkbox" id="show-all" checked> All hands</label>
+      <label class="check" title="At your turns, show what the advisor would bid and why"><input type="checkbox" id="hints" checked> Hints</label>
+      <span id="status" class="status"></span>
+    </div>
+
+    <div id="bidbox" class="bidbox hidden">
+      <div class="bidbox-head" id="bidbox-title"></div>
+      <div id="bidbox-grid" class="bidbox-grid"></div>
+      <div id="bidbox-special" class="bidbox-special"></div>
+    </div>
+
+    <div id="result" class="result hidden"></div>
+  </section>
+
+  <aside id="side" class="side">
+    <div id="side-empty" class="side-empty">Click a bid in the auction to see why it was made.</div>
+    <div id="side-body" class="hidden"></div>
+  </aside>
+</main>
+
+<div id="popup" class="popup hidden" role="tooltip"></div>
+
+<div id="setup" class="modal hidden" role="dialog" aria-label="Deal options">
+  <div class="modal-card">
+    <div class="modal-head"><h2>Deal options</h2><button id="setup-close" class="btn ghost" aria-label="Close">Close</button></div>
+    <div class="form-grid">
+      <label for="dealer">Dealer</label>
+      <select id="dealer"><option value="you">You</option><option value="">Random</option><option value="N">North</option><option value="E">East</option><option value="S">South</option><option value="W">West</option></select>
+      <label for="vul">Vulnerable</label>
+      <select id="vul"><option value="random">Random</option><option value="None">None</option><option value="NS">N-S</option><option value="EW">E-W</option><option value="Both">Both</option></select>
+      <label for="seed">Deal no.</label><input id="seed" type="number" min="0" placeholder="Random">
+      <label for="advisor-sel" title="Explains what it would have bid at your turns">Advisor</label><select id="advisor-sel"></select>
+    </div>
+    <details class="enter-deal">
+      <summary>Enter a deal</summary>
+      <p class="hint">PBN, clockwise from the first seat, suits ♠.♥.♦.♣, e.g. <code>N:Q6.A76.JT32.KT64 AT74.K9.KQ96.953 52.83.A854.AQ872 KJ983.QJT542.7.J</code>. Optionally the auction so far from the dealer, e.g. <code>1D 2C 2H 3C P</code>.</p>
+      <label class="block">Deal<input id="pbn" autocomplete="off"></label>
+      <label class="block">Auction so far<input id="calls" autocomplete="off"></label>
+      <button id="btn-example" class="btn ghost" type="button">Fill in an example</button>
+    </details>
+    <div class="modal-foot">
+      <span class="hint">Deals come from the 500,000 held-out double-dummy deals. An entered deal is not scored.</span>
+      <button id="btn-deal" class="btn primary">Deal</button>
+    </div>
+  </div>
+</div>
+
+<!-- the seat selects (also the source for the next deal) -->
+<div class="hidden"><select id="seat-sel-N"></select><select id="seat-sel-E"></select><select id="seat-sel-S"></select><select id="seat-sel-W"></select></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

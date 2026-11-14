@@ -1,0 +1,10 @@
+# Extra dependencies of the explainer (nlg/train_qwen.py, nlg/eval_qwen.py, nlg/qwen_model.py and the interface's
+# Ask tab). Not needed for training or evaluating the bidding models.
+#   pip install -r requirements-lock.txt -r requirements-nlg.txt
+# transformers/tokenizers must be at least 4.51/0.21 to read Qwen3's tokenizer.
+torch==2.14.0
+transformers>=4.51.0
+accelerate>=0.30.0
+tokenizers>=0.21.0
+bitsandbytes>=0.50.2
+peft>=0.21.0
